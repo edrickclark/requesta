@@ -3,17 +3,17 @@
 Gem::Specification.new do |s|
 
   s.name        = 'requesta'
-  s.version     = '0.1.0'
+  s.version     = '0.1.1'
   s.summary     = "Wrapper for simple http(s) requests."
   s.description = "Wrapper for simple http(s) requests."
   s.authors     = ["Edrick Clark"]
   s.email       = 'edrickclark@gmail.com'
-  s.homepage    = 'https://bitbucket.org/edyblk/requesta'
+  s.homepage    = 'https://github.com/edrickclark/requesta'
   
   s.files       = Dir['lib/**/*', 'requesta.gemspec']
   
   s.metadata    = {
-                    "source_code_uri" => "https://bitbucket.org/edyblk/requesta"
+                    "source_code_uri" => "https://github.com/edrickclark/requesta"
                   }
 
   s.add_runtime_dependency 'activesupport', '~> 5.2'
