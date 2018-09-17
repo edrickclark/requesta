@@ -8,7 +8,9 @@ require_relative 'requesta/custom_error'
 
 class Requesta
 
-  attr_accessor :ssl, :post, :body, :username, :password
+  attr_accessor :ssl, :post, :verbose, :body
+  attr_writer :username, :password
+  attr_reader :headers
 
   def initialize
     @ssl = false
@@ -24,9 +26,9 @@ class Requesta
 
     http = Net::HTTP.new(uri.host, uri.port)
 
-    @ssl = true if uri.scheme == 'https'
+    scheme_is_https = (uri.scheme == 'https')
 
-    if @ssl
+    if @ssl || scheme_is_https
       http.use_ssl = true
       http.verify_mode = OpenSSL::SSL::VERIFY_NONE
     end
