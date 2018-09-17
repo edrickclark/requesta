@@ -10,11 +10,13 @@ class CustomError < StandardError
   end
 
   def report
-    puts formatted
-  end
-  
-  def formatted
-    "\n\n" + self.class.to_s + ":\s" + self.message + "\n\n" + self.backtrace.join("\n") + "\n\n"
+    "\n\n" + 
+    self.class.to_s + 
+    ":\s" + 
+    self.message + 
+    "\n\n" + 
+    self.backtrace.join("\n") + 
+    "\n\n"
   end
 
 end
