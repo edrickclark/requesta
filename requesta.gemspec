@@ -3,7 +3,7 @@
 Gem::Specification.new do |s|
 
   s.name        = 'requesta'
-  s.version     = '0.1.1'
+  s.version     = '0.1.2'
   s.summary     = "Wrapper for simple http(s) requests."
   s.description = "Wrapper for simple http(s) requests."
   s.authors     = ["Edrick Clark"]
