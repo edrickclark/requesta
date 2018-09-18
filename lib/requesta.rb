@@ -26,9 +26,7 @@ class Requesta
 
     http = Net::HTTP.new(uri.host, uri.port)
 
-    scheme_is_https = (uri.scheme == 'https')
-
-    if @ssl || scheme_is_https
+    if @ssl || uri_scheme_https?(uri)
       http.use_ssl = true
       http.verify_mode = OpenSSL::SSL::VERIFY_NONE
     end
@@ -51,6 +49,18 @@ class Requesta
   rescue CustomError => error
     error.report
     nil
+  end
+
+  # URI/HREF
+  #----------
+
+  def uri_scheme_https?(uri)
+    uri.scheme == 'https'
+  end
+
+  def href_scheme_https?(href)
+    uri = URI(href)
+    uri_scheme_https?(uri)
   end
 
   # Request Headers
