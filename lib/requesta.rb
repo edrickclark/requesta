@@ -1,10 +1,14 @@
+# FILE: lib/requesta.rb
+
+# Reference:
+# https://guides.rubyonrails.org/active_support_core_extensions.html
+
 require 'net/http'
 require 'net/https'
+require 'active_support'
+require 'active_support/core_ext/object/blank'
 
-# https://guides.rubyonrails.org/active_support_core_extensions.html
-require 'active_support/all'
-
-require_relative 'requesta/custom_error'
+require_relative 'requesta/errors'
 
 class Requesta
 
@@ -20,7 +24,9 @@ class Requesta
   end
 
   def request(uri)
-    raise CustomError, "request(): URI was nil" if uri.nil?
+    unless uri.is_a?(URI)
+      raise RequestaError::RequestError, "request(): 'uri' parameter must be of type 'URI'"
+    end
 
     puts "Requesting '#{uri.to_s}'" if @verbose
 
@@ -46,56 +52,63 @@ class Requesta
     end
 
     http.request(request)
-  rescue CustomError => error
-    error.report
-    nil
-  end
-
-  # URI/HREF
-  #----------
-
-  def uri_scheme_https?(uri)
-    uri.scheme == 'https'
-  end
-
-  def href_scheme_https?(href)
-    uri = URI(href)
-    uri_scheme_https?(uri)
   end
 
   # Request Headers
   #-----------------
 
-  def set_headers(headers={})
-    raise CustomError, "set_headers(): headers was blank" if headers.blank?
+  def set_headers(headers)
+    unless headers.is_a?(Hash)
+      raise RequestaError::RequestHeaderError, "set_headers(): 'headers' parameter must be of type 'Hash'"
+    end
+
     headers.each{ |key,value| set_header(key, value) }
-  rescue CustomError => error
-    error.report
-    nil
   end
 
-  def set_header(key=nil, value=nil)
-    raise CustomError, "set_header(): key was nil" if key.nil?
-    raise CustomError, "set_header(): value was nil" if value.nil?
+  def set_header(key, value)
+    unless key.is_a?(String) || key.is_a?(Symbol)
+      raise RequestaError::RequestHeaderError, "set_header(): 'key' parameter must be of type Symbol or String"
+    end
+
+    unless value.is_a?(String) || value.is_a?(Symbol)
+      raise RequestaError::RequestHeaderError, "set_header(): 'value' parameter must be of type Symbol or String"
+    end
+
     @headers[key] = value
-  rescue CustomError => error
-    error.report
-    nil
   end
 
   def clear_headers
     @headers = {}
-  rescue CustomError => error
-    error.report
-    nil
   end
 
-  def clear_header(key=nil)
-    raise CustomError, "clear_header(): key was nil" if key.nil?
+  def clear_header(key)
+    unless key.is_a?(String) || key.is_a?(Symbol)
+      raise RequestaError::RequestHeaderError, "clear_header(): 'key' must be of type Symbol or String"
+    end
+
     @headers.delete(key)
-  rescue CustomError => error
-    error.report
-    nil
+  end
+
+private
+
+  # URI/HREF
+  #----------
+
+  def uri_scheme_https?(uri)
+    unless uri.is_a?(URI)
+      raise RequestaError::MethodError, "href_scheme_https?(): 'href' parameter must be of type 'URI'"
+    end
+
+    uri.scheme == 'https'
+  end
+
+  def href_scheme_https?(href)
+    unless href.is_a?(String)
+      raise RequestaError::MethodError, "href_scheme_https?(): 'href' parameter must be of type 'String'"
+    end
+
+    uri = URI(href)
+    uri_scheme_https?(uri)
   end
 
 end
